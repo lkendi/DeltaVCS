@@ -64,7 +64,7 @@ While Delta doesn’t have all of Git’s advanced features, it covers core func
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/username/DeltaVCS.git
+   git clone https://github.com/lkendi/DeltaVCS.git
    ```
 
 2. Navigate to the project directory
