@@ -69,6 +69,11 @@ class Repository:
 
     @staticmethod
     def status() -> None:
+        """
+        Prints the contents of the staging area.
+
+        The output is a list of files with their hashes.
+        """
         repo_path = ".delta"
         index_path = os.path.join(repo_path, "index")
         index = eval(Utils.read_file(index_path) or "{}")
