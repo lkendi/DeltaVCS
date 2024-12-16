@@ -92,6 +92,5 @@ While Delta doesn’t have all of Git’s advanced features, it covers core func
 
 ## Future Enhancements
 
--   Branching and merging
 -   Remote repository support
--   Conflict detection and resolution
+-   Conflict resolution
