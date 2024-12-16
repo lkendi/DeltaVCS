@@ -2,34 +2,26 @@
 """Delta module - parses user commands"""
 from commit import Commit
 from repo import Repository
-from staging_area import StagingArea
 import sys
 
 
 class Delta:
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Constructor for the Delta class. Initializes the Delta class by
         setting up a dictionary of commands mapped to their
-        corresponding methods. These commands include:
-        - "init" for initializing a repository,
-        - "add" for adding files to the staging area,
-        - "commit" for committing changes,
-        - "log" for viewing commit history,
-        - "status" for checking the status of the repository,
-        - "clone" for cloning an existing repository.
+        corresponding methods.
         """
-
         self.commands = {
             "init": self.init_repo,
             "add": self.add_files,
             "commit": self.commit_changes,
             "log": self.show_commit_history,
             "status": self.show_status,
-            "clone": self.clone_repo
+            "clone": self.clone_repo,
         }
 
-    def run(self):
+    def run(self) -> None:
         """
         Parses user commands from command line arguments
         and executes the corresponding function.
@@ -37,7 +29,6 @@ class Delta:
         Raises:
             ValueError: If no command is provided or if the command is unknown.
         """
-
         if len(sys.argv) < 2:
             raise ValueError(
                 "No command provided. "
@@ -45,21 +36,22 @@ class Delta:
             )
         command = sys.argv[1]
         if command in self.commands:
-            self.commands[command](*sys.argv[2:])
+            try:
+                self.commands[command](*sys.argv[2:])
+            except Exception as e:
+                print(f"Error: {e}")
         else:
-            raise ValueError(f"Unknown command: {command}")
+            raise ValueError(f"Unknown command: `{command}`")
 
-    def init_repo(self):
+    def init_repo(self) -> None:
         """
-        Initializes a repository in the current directory. Called
-        when the user runs the "init" command in the command line.
+        Initializes a repository in the current directory.
         """
         Repository.init()
 
-    def add_files(self, *files):
+    def add_files(self, *files: str) -> None:
         """
         Adds files to the staging area.
-        Called when the user runs the "add" command.
 
         Args:
             *files: A variable number of file paths to add to the staging area.
@@ -69,12 +61,11 @@ class Delta:
         """
         if not files:
             raise ValueError("No files provided")
-        StagingArea.add_files(files)
+        Repository.add(list(files))
 
-    def commit_changes(self, *args):
+    def commit_changes(self, *args: str) -> None:
         """
         Commits changes in the staging area.
-        Called when the user runs the "commit" command.
 
         Args:
             *args: Command line arguments.
@@ -90,24 +81,21 @@ class Delta:
             )
         Commit.create(args[1])
 
-    def show_commit_history(self):
+    def show_commit_history(self) -> None:
         """
         Displays the commit history of the repository.
-        Called when the user runs the "log" command.
         """
         Commit.log()
 
-    def show_status(self):
+    def show_status(self) -> None:
         """
         Checks the status of the repository.
-        Called when the user runs the "status" command.
         """
         Repository.status()
 
-    def clone_repo(self, *args):
+    def clone_repo(self, *args: str) -> None:
         """
         Clones a repository.
-        Called when the user runs the "clone" command.
 
         Args:
             *args: Command line arguments.
