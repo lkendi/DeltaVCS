@@ -3,6 +3,7 @@
 from commit import Commit
 from repo import Repository
 from branch import Branch
+import os
 import sys
 
 
@@ -182,12 +183,19 @@ class Delta:
             The first argument must be the URL of the repository to clone.
 
         Raises:
-            ValueError: If no URL is provided.
+            ValueError: If the source path is missing.
         """
         if len(args) < 1:
-            raise ValueError("URL required. Use: delta clone <url>")
+            raise ValueError(
+                "Source path required. Use: delta clone <source> <destination>"
+            )
+        source_path = args[0]
+        if len(args) > 1:
+            destination_path = args[1]
+        else:
+            destination_path = os.path.basename(os.path.abspath(source_path))
         try:
-            Repository.clone(args[0])
+            Repository.clone(source_path, destination_path)
         except Exception as e:
             print(f"Error: {e}")
 

@@ -3,3 +3,4 @@ env/
 TODO
 .delta
 *.txt
+.deltaignore

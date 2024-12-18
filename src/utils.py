@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Reusable functions module"""
 from config import DELTA_DIR
+import fnmatch
 import hashlib
 import os
 
@@ -78,3 +79,20 @@ class Utils:
         """
         with open(file_path, "w") as f:
             f.write(content)
+
+    @staticmethod
+    def matches_pattern(file_path: str, pattern: str) -> bool:
+        """
+        Checks if a file path matches a pattern.
+
+        Args:
+            file_path (str): The file path to check.
+            pattern (str): The pattern to match.
+
+        Returns:
+            bool: True if the file path matches the pattern, False otherwise.
+        """
+        file_path = os.path.normpath(file_path)
+        pattern = os.path.normpath(pattern)
+
+        return fnmatch.fnmatch(file_path, pattern)
