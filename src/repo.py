@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Repo initialization module"""
-from utils import Utils
+from config import DELTA_DIR, OBJECTS_DIR, REFS_DIR, HEAD_FILE, INDEX_FILE
+import json
 import os
+from utils import Utils
 
 
 class Repository:
@@ -22,14 +24,15 @@ class Repository:
         Returns:
             bool: Whether the repository was successfully initialized.
         """
-        repo_path = os.path.join(path, ".delta")
+        repo_path = os.path.join(path, DELTA_DIR)
         if os.path.exists(repo_path):
             print("Repository already initialized.")
             return False
 
-        Utils.create_directory(f"{repo_path}/objects")
-        Utils.write_file(f"{repo_path}/HEAD", "ref: refs/heads/master\n")
-        Utils.write_file(f"{repo_path}/index", "{}")
+        Utils.create_directory(OBJECTS_DIR)
+        Utils.create_directory(REFS_DIR)
+        Utils.write_file(HEAD_FILE, "ref: refs/heads/master\n")
+        Utils.write_file(INDEX_FILE, "{}")
         print("Initialized an empty repository")
         return True
 
@@ -45,17 +48,12 @@ class Repository:
             FileNotFoundError: If a specified file does not exist.
             RuntimeError: If the repository is not initialized.
         """
-        repo_path = ".delta"
-        objects_path = os.path.join(repo_path, "objects")
-        index_path = os.path.join(repo_path, "index")
-
-        if not os.path.exists(repo_path):
+        if not Utils.is_repo_initialized():
             raise RuntimeError(
                 "Repository not initialized. Run 'delta init' first."
             )
 
-        index = Utils.read_file(index_path)
-        index = eval(index) if index else {}
+        index = json.loads(Utils.read_file(INDEX_FILE) or "{}")
 
         for file in files:
             if not os.path.exists(file):
@@ -65,7 +63,7 @@ class Repository:
             index[file] = file_hash
             print(f"Added `{file}` to staging area.")
 
-        Utils.write_file(index_path, str(index))
+        Utils.write_file(INDEX_FILE, json.dumps(index))
 
     @staticmethod
     def status() -> None:
@@ -74,9 +72,11 @@ class Repository:
 
         The output is a list of files with their hashes.
         """
-        repo_path = ".delta"
-        index_path = os.path.join(repo_path, "index")
-        index = eval(Utils.read_file(index_path) or "{}")
+        if not Utils.is_repo_initialized():
+            raise RuntimeError(
+                "Repository not initialized. Run 'delta init' first."
+            )
+        index = json.loads(Utils.read_file(INDEX_FILE) or "{}")
 
         print("Staging area:")
         for file, file_hash in index.items():

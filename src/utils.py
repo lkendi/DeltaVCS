@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Reusable functions module"""
+from config import DELTA_DIR
 import hashlib
 import os
 
@@ -24,6 +25,16 @@ class Utils:
 
         with open(file_path, "rb") as f:
             return hashlib.sha1(f.read()).hexdigest()
+
+    @staticmethod
+    def is_repo_initialized() -> bool:
+        """
+        Checks if the repository is initialized.
+
+        Returns:
+            bool: True if the repository is initialized, False otherwise.
+        """
+        return os.path.exists(DELTA_DIR)
 
     @staticmethod
     def create_directory(path: str) -> None:

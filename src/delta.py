@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
-"""Delta module - parses user commands"""
+"""Delta module - entry point"""
 from commit import Commit
 from repo import Repository
+from branch import Branch
 import sys
 
 
 class Delta:
+    """Delta class - parses user commands"""
     def __init__(self) -> None:
         """
         Constructor for the Delta class. Initializes the Delta class by
@@ -19,6 +21,8 @@ class Delta:
             "log": self.show_commit_history,
             "status": self.show_status,
             "clone": self.clone_repo,
+            "branch": self.handle_branch,
+            "checkout": self.handle_checkout,
         }
 
     def run(self) -> None:
@@ -47,7 +51,10 @@ class Delta:
         """
         Initializes a repository in the current directory.
         """
-        Repository.init()
+        try:
+            Repository.init()
+        except Exception as e:
+            print(f"Error: {e}")
 
     def add_files(self, *files: str) -> None:
         """
@@ -61,7 +68,10 @@ class Delta:
         """
         if not files:
             raise ValueError("No files provided")
-        Repository.add(list(files))
+        try:
+            Repository.add(list(files))
+        except Exception as e:
+            print(f"Error: {e}")
 
     def commit_changes(self, *args: str) -> None:
         """
@@ -79,19 +89,89 @@ class Delta:
             raise ValueError(
                 "Commit message required. Use: delta commit -m 'message'"
             )
-        Commit.create(args[1])
+        try:
+            Commit.create(args[1])
+        except Exception as e:
+            print(f"Error: {e}")
 
     def show_commit_history(self) -> None:
         """
         Displays the commit history of the repository.
         """
-        Commit.log()
+        try:
+            Commit.log()
+        except Exception as e:
+            print(f"Error: {e}")
 
     def show_status(self) -> None:
         """
         Checks the status of the repository.
         """
-        Repository.status()
+        try:
+            Repository.status()
+        except Exception as e:
+            print(f"Error: {e}")
+
+    def handle_branch(self, *args: str) -> None:
+        """
+        Handles the branch command.
+
+        Args:
+            *args: Command line arguments.
+            The first argument specifies the action:
+            - "list" for listing branches
+            - "delete" to delete a branch
+            - Any other argument to create a branch
+
+        Raises:
+            ValueError: If no branch name is provided
+            or invalid arguments are given.
+        """
+        if len(args) == 0:
+            try:
+                Branch.list()
+            except Exception as e:
+                print(f"Error: {e}")
+        elif args[0] == "delete":
+            if len(args) < 2:
+                raise ValueError(
+                    "Branch name required. Use: delta branch delete <name>"
+                )
+            try:
+                Branch.delete(args[1])
+            except Exception as e:
+                print(f"Error: {e}")
+        elif len(args) == 1:
+            try:
+                Branch.create(args[0])
+            except Exception as e:
+                print(f"Error: {e}")
+        else:
+            raise ValueError(
+                "Invalid usage. Use 'delta branch', "
+                "'delta branch delete <name>', or "
+                "'delta branch <name>'"
+            )
+
+    def handle_checkout(self, *args: str) -> None:
+        """
+        Handles the checkout command.
+
+        Args:
+            *args: Command line arguments.
+            The first argument must be the branch name.
+
+        Raises:
+            ValueError: If no branch name is provided.
+        """
+        if len(args) != 1:
+            raise ValueError(
+                "Branch name required. Use: delta checkout <name>"
+            )
+        try:
+            Branch.switch(args[0])
+        except Exception as e:
+            print(f"Error: {e}")
 
     def clone_repo(self, *args: str) -> None:
         """
@@ -106,7 +186,10 @@ class Delta:
         """
         if len(args) < 1:
             raise ValueError("URL required. Use: delta clone <url>")
-        Repository.clone(args[0])
+        try:
+            Repository.clone(args[0])
+        except Exception as e:
+            print(f"Error: {e}")
 
 
 if __name__ == "__main__":
