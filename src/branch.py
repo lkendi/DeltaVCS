@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Branch module"""
-from config import BRANCH_DIR, HEAD_FILE
 import os
 import re
+from config import BRANCH_DIR, HEAD_FILE
 from utils import Utils
 
 

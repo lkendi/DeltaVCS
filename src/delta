@@ -26,19 +26,28 @@ class Delta:
             "checkout": self.handle_checkout,
         }
 
+        self.command_descriptions = {
+            "init": "Initialize a new repository in the current directory.",
+            "add": "Add files to the staging area to prepare for commit.",
+            "commit": "Commit the staged changes with a message.",
+            "log": "Show the commit history of the repository.",
+            "status": (
+                "Show the current status of the repository "
+                "(staged/unstaged changes)."
+            ),
+            "clone": "Clone a remote repository into a new directory.",
+            "branch": "Create, list, or delete branches.",
+            "checkout": "Switch to a different branch.",
+        }
+
     def run(self) -> None:
         """
         Parses user commands from command line arguments
         and executes the corresponding function.
-
-        Raises:
-            ValueError: If no command is provided or if the command is unknown.
         """
         if len(sys.argv) < 2:
-            raise ValueError(
-                "No command provided. "
-                "Use one of: init, add, commit, log, status, clone."
-            )
+            self.show_help()
+            return
         command = sys.argv[1]
         if command in self.commands:
             try:
@@ -47,6 +56,19 @@ class Delta:
                 print(f"Error: {e}")
         else:
             raise ValueError(f"Unknown command: `{command}`")
+
+    def show_help(self) -> None:
+        """
+        Shows a list of available commands with descriptions.
+        """
+        print("Delta - A simple version control system")
+        print("\nAvailable commands:\n")
+        for command in self.commands:
+            description = self.command_descriptions.get(
+                command, "No description available."
+            )
+            print(f"  {command}: {description}")
+        print("\nUse 'delta <command>' to get more details.")
 
     def init_repo(self) -> None:
         """
