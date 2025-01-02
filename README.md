@@ -1,7 +1,7 @@
-# Delta: A Distributed Version Control System
+# Delta Version Control System
 
 ## Introduction
-Welcome to **Delta**, a distributed version control system built with Python and inspired by the core functionalities of Git.
+Welcome to **Delta**, a version control system built with Python and inspired by the core functionalities of Git.
 Whether managing changes i projects or keeping track ofdevelopment progress, Delta provides a simple and intuitive way to version control your files locally.
 
 Why the name **Delta**? It’s derived from the fourth letter of the Greek alphabet and represents **change** or **difference**—exactly what version control is all about!
